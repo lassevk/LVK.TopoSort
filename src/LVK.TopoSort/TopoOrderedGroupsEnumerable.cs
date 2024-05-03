@@ -27,21 +27,21 @@ public class TopoOrderedGroupsEnumerable<T> : IEnumerable<T[]>
         var outgoingDependencies = new Dictionary<T, HashSet<T>>(_equalityComparer);
         var elementsWithNoIncomingDependencies = new HashSet<T>(_equalityComparer);
 
-        InitializeDataStructures(incomingDependencies, outgoingDependencies, elementsWithNoIncomingDependencies);
+        InitializeGraph(incomingDependencies, outgoingDependencies, elementsWithNoIncomingDependencies);
         while (elementsWithNoIncomingDependencies.Any())
         {
             T[] group = elementsWithNoIncomingDependencies.ToArray();
             Array.Sort(group, _comparer);
             yield return group;
 
-            RemoveBatchFromConstraints(incomingDependencies, outgoingDependencies, elementsWithNoIncomingDependencies);
+            RemoveGroupFromGraph(group, incomingDependencies, outgoingDependencies, elementsWithNoIncomingDependencies);
         }
 
         if (outgoingDependencies.Any())
             throw new TopologicalCycleException("Topological sort contains cycles", outgoingDependencies.Keys.OfType<object>());
     }
 
-    private void InitializeDataStructures(Dictionary<T, HashSet<T>> incomingDependencies, Dictionary<T, HashSet<T>> outgoingDependencies, HashSet<T> elementsWithNoIncomingDependencies)
+    private void InitializeGraph(Dictionary<T, HashSet<T>> incomingDependencies, Dictionary<T, HashSet<T>> outgoingDependencies, HashSet<T> elementsWithNoIncomingDependencies)
     {
         void addToDictionary(Dictionary<T, HashSet<T>> dictionary, T key, T value)
         {
@@ -72,9 +72,8 @@ public class TopoOrderedGroupsEnumerable<T> : IEnumerable<T[]>
         elementsWithNoIncomingDependencies.RemoveWhere(incomingDependencies.ContainsKey);
     }
 
-    private void RemoveBatchFromConstraints(Dictionary<T, HashSet<T>> incomingDependencies, Dictionary<T, HashSet<T>> outgoingDependencies, HashSet<T> elementsWithNoIncomingDependencies)
+    private void RemoveGroupFromGraph(T[] batch, Dictionary<T, HashSet<T>> incomingDependencies, Dictionary<T, HashSet<T>> outgoingDependencies, HashSet<T> elementsWithNoIncomingDependencies)
     {
-        var batch = elementsWithNoIncomingDependencies.ToList();
         elementsWithNoIncomingDependencies.Clear();
 
         foreach (T element in batch)
