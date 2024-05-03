@@ -27,7 +27,7 @@ public class TopoTests
     [TestCase(1, 2)]
     [TestCase(2, 3)]
     [TestCase(2, 1)]
-    public void FollowedBy_WithTestCases_CreatesCorrectConstraints(int first, int second)
+    public void ComesBefore_WithTestCases_CreatesCorrectConstraints(int first, int second)
     {
         Constraint<int> constraint = first.ComesBefore(second);
 

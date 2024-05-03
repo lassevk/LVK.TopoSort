@@ -168,8 +168,19 @@ constraints, so the above example can be rewritten as:
 ```csharp
 Constraint<int>[] constraints = [
     1, 10, 5, 4,
-    1.FollowedBy(10),
-    10.FollowedBy(5),
-    4.FollowedBy(1),
+    1.ComesBefore(10),
+    10.ComesBefore(5),
+    4.ComesBefore(1),
+];
+```
+
+There is also the reverse method, if this lends itself more natural to the understanding of the graph, `ComesAfter`:
+
+```csharp
+Constraint<int>[] constraints = [
+    1, 10, 5, 4,
+    10.ComesAfter(1),
+    5.ComesAfter(10),
+    1.ComesAfter(4),
 ];
 ```
