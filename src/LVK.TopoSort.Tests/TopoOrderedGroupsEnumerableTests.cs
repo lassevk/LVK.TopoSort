@@ -66,7 +66,7 @@ public class TopoOrderedGroupsEnumerableTests
     [Test]
     public void GetEnumerableItems_SomeElementsDoesNotHaveConstraints_ReturnsAllSuchsElementsFirst()
     {
-        Constraint<int>[] constraints = [Constraint.Create(2, 3), Constraint.Create(3, 4), Constraint.CreateUnconstrained(1), Constraint.CreateUnconstrained(5),];
+        Constraint<int>[] constraints = [Topo.Constrained(2, 3), Topo.Constrained(3, 4), Topo.Element(1), Topo.Element(5),];
 
         var groups = constraints.OrderedGroups().ToList();
 
@@ -81,8 +81,8 @@ public class TopoOrderedGroupsEnumerableTests
     {
         Constraint<string>[] constraints =
         [
-            Constraint.Create("A", "B"), Constraint.Create("A", "C"), Constraint.Create("B", "D"), Constraint.Create("C", "D"), Constraint.Create("E", "F"), Constraint.CreateUnconstrained("G"),
-            Constraint.CreateUnconstrained("H"),
+            Topo.Constrained("A", "B"), Topo.Constrained("A", "C"), Topo.Constrained("B", "D"), Topo.Constrained("C", "D"), Topo.Constrained("E", "F"), Topo.Element("G"),
+            Topo.Element("H"),
         ];
 
         var groups = constraints.OrderedGroups().ToList();
@@ -90,6 +90,25 @@ public class TopoOrderedGroupsEnumerableTests
         Assert.That(groups, Is.EqualTo(new string[][]
             {
                 ["A", "E", "G", "H"], ["B", "C", "F"], ["D"],
+            })
+           .AsCollection);
+    }
+
+    [Test]
+    public void ReadMeAdditionalExample()
+    {
+        Constraint<int>[] constraints = [
+            1, 4, 10, 5,
+            1.FollowedBy(10),
+            10.FollowedBy(5),
+            4.FollowedBy(1),
+        ];
+
+        var output = constraints.Ordered().ToList();
+
+        Assert.That(output, Is.EqualTo(new int[]
+            {
+                4, 1, 10, 5,
             })
            .AsCollection);
     }
