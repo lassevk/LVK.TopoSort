@@ -84,9 +84,7 @@ public class TopoOrderedGroupsEnumerable<T> : IEnumerable<T[]>
 
             foreach (T followingElement in outgoingForElement)
             {
-                if (!incomingDependencies.TryGetValue(followingElement, out HashSet<T>? incomingForFollowingElement))
-                    continue;
-
+                HashSet<T> incomingForFollowingElement = incomingDependencies[followingElement];
                 incomingForFollowingElement.Remove(element);
                 if (incomingForFollowingElement.Any())
                     continue;
