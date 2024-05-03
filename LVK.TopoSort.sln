@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5922FDFD-3141-4848-8D90-DDA29D8A1CB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LVK.TopoSort", "src\LVK.TopoSort\LVK.TopoSort.csproj", "{4F5CB75B-C5B6-405A-93C6-9EB319C2E48A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LVK.TopoSort.Tests", "src\LVK.TopoSort.Tests\LVK.TopoSort.Tests.csproj", "{E9567E4F-2E23-4EFF-A911-6AE74E54CBA9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "@configuration", "@configuration", "{FB3BF8AB-B08B-491F-B4E3-E465957DA753}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "@documents", "@documents", "{F6D33372-FC83-4233-B1AE-704E1F204F35}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "@github workflows", "@github workflows", "{0A938400-BBB3-4FD7-B7E6-BA1D795B47CA}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4F5CB75B-C5B6-405A-93C6-9EB319C2E48A} = {5922FDFD-3141-4848-8D90-DDA29D8A1CB2}
+		{E9567E4F-2E23-4EFF-A911-6AE74E54CBA9} = {5922FDFD-3141-4848-8D90-DDA29D8A1CB2}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F5CB75B-C5B6-405A-93C6-9EB319C2E48A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F5CB75B-C5B6-405A-93C6-9EB319C2E48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F5CB75B-C5B6-405A-93C6-9EB319C2E48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F5CB75B-C5B6-405A-93C6-9EB319C2E48A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9567E4F-2E23-4EFF-A911-6AE74E54CBA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9567E4F-2E23-4EFF-A911-6AE74E54CBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9567E4F-2E23-4EFF-A911-6AE74E54CBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9567E4F-2E23-4EFF-A911-6AE74E54CBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
