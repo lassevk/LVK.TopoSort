@@ -18,7 +18,11 @@ public static class Topo
         where T : notnull
         => new(firstElement, secondElement);
 
-    public static Constraint<T> FollowedBy<T>(this T firstElement, T secondElement)
+    public static Constraint<T> ComesBefore<T>(this T firstElement, T secondElement)
         where T : notnull
         => new(firstElement, secondElement);
+
+    public static Constraint<T> ComesAfter<T>(this T secondElement, T firstElement)
+        where T : notnull
+        => firstElement.ComesBefore(secondElement);
 }

@@ -29,7 +29,7 @@ public class TopoTests
     [TestCase(2, 1)]
     public void FollowedBy_WithTestCases_CreatesCorrectConstraints(int first, int second)
     {
-        Constraint<int> constraint = first.FollowedBy(second);
+        Constraint<int> constraint = first.ComesBefore(second);
 
         Assert.That(constraint.FirstElement, Is.EqualTo(first));
         Assert.That(constraint.SecondElement, Is.EqualTo(second));

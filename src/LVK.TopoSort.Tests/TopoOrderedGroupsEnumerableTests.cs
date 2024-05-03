@@ -105,9 +105,30 @@ public class TopoOrderedGroupsEnumerableTests
     {
         Constraint<int>[] constraints = [
             1, 4, 10, 5,
-            1.FollowedBy(10),
-            10.FollowedBy(5),
-            4.FollowedBy(1),
+            1.ComesBefore(10),
+            10.ComesBefore(5),
+            4.ComesBefore(1),
+        ];
+
+        var output = constraints.Ordered().ToList();
+
+        Assert.That(output, Is.EqualTo(new int[]
+            {
+                4, 1, 10, 5,
+            })
+           .AsCollection);
+
+        Verify.ConstraintsSatisfied(constraints, output);
+    }
+
+    [Test]
+    public void ReadMeAdditionalExample_ComesAfter()
+    {
+        Constraint<int>[] constraints = [
+            1, 4, 10, 5,
+            10.ComesAfter(1),
+            5.ComesAfter(10),
+            1.ComesAfter(4),
         ];
 
         var output = constraints.Ordered().ToList();
@@ -125,21 +146,21 @@ public class TopoOrderedGroupsEnumerableTests
     public void GetEnumeratedElements_InterleavedConstraints_ProducesCorrectResult()
     {
         Constraint<int>[] constraints = [
-            1.FollowedBy(3),    //    1 -> 3 -> 5 -> 7
-            2.FollowedBy(4),    //   / \  / \  / \  /
-            3.FollowedBy(5),    //  2 -> 4 -> 6 -> 8
-            4.FollowedBy(6),
-            5.FollowedBy(7),    // 2, 1, 4, 3, 6, 5, 8, 7
-            6.FollowedBy(8),
+            1.ComesBefore(3),    //    1 -> 3 -> 5 -> 7
+            2.ComesBefore(4),    //   / \  / \  / \  /
+            3.ComesBefore(5),    //  2 -> 4 -> 6 -> 8
+            4.ComesBefore(6),
+            5.ComesBefore(7),    // 2, 1, 4, 3, 6, 5, 8, 7
+            6.ComesBefore(8),
 
-            2.FollowedBy(1),
-            4.FollowedBy(3),
-            6.FollowedBy(5),
-            8.FollowedBy(7),
+            2.ComesBefore(1),
+            4.ComesBefore(3),
+            6.ComesBefore(5),
+            8.ComesBefore(7),
 
-            1.FollowedBy(4),
-            3.FollowedBy(6),
-            5.FollowedBy(8),
+            1.ComesBefore(4),
+            3.ComesBefore(6),
+            5.ComesBefore(8),
         ];
 
         var output = constraints.Ordered().ToList();
