@@ -82,7 +82,7 @@ If the constraint graph contains cycles, an exception will be thrown during enum
 Example:
 
 ```mermaid
-graph TD;
+graph LR;
     A --> B;
     B --> C;
     C --> D;
