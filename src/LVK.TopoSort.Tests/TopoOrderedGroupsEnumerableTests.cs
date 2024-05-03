@@ -1,17 +1,23 @@
 namespace LVK.TopoSort.Tests;
 
-public class TopoOrderedEnumerableTests
+public class TopoOrderedGroupsEnumerableTests
 {
     [Test]
     public void Constructor_NullSource_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = new TopoOrderedEnumerable<int>(null!, EqualityComparer<int>.Default));
+        Assert.Throws<ArgumentNullException>(() => _ = new TopoOrderedGroupsEnumerable<int>(null!, EqualityComparer<int>.Default, Comparer<int>.Default));
+    }
+
+    [Test]
+    public void Constructor_NullEqualityComparer_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => _ = new TopoOrderedGroupsEnumerable<int>(new List<Constraint<int>>(), null!, Comparer<int>.Default));
     }
 
     [Test]
     public void Constructor_NullComparer_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => _ = new TopoOrderedEnumerable<int>(new List<Constraint<int>>(), null!));
+        Assert.Throws<ArgumentNullException>(() => _ = new TopoOrderedGroupsEnumerable<int>(new List<Constraint<int>>(), EqualityComparer<int>.Default, null!));
     }
 
     [Test]
@@ -19,11 +25,11 @@ public class TopoOrderedEnumerableTests
     {
         Constraint<int>[] constraints = [new Constraint<int>(1, 2), new Constraint<int>(2, 3), new Constraint<int>(3, 4),];
 
-        var output = constraints.Ordered().ToList();
+        var output = constraints.OrderedGroups().ToList();
 
-        Assert.That(output, Is.EqualTo(new[]
+        Assert.That(output, Is.EqualTo(new int[][]
             {
-                1, 2, 3, 4,
+                [1], [2], [3], [4],
             })
            .AsCollection);
     }
@@ -60,23 +66,31 @@ public class TopoOrderedEnumerableTests
     [Test]
     public void GetEnumerableItems_SomeElementsDoesNotHaveConstraints_ReturnsAllSuchsElementsFirst()
     {
-        Constraint<int>[] constraints = [
-            Constraint.Create(2, 3),
-            Constraint.Create(3, 4),
-            Constraint.CreateUnconstrained(1),
-            Constraint.CreateUnconstrained(5),
+        Constraint<int>[] constraints = [Constraint.Create(2, 3), Constraint.Create(3, 4), Constraint.CreateUnconstrained(1), Constraint.CreateUnconstrained(5),];
+
+        var groups = constraints.OrderedGroups().ToList();
+
+        Assert.That(groups, Is.EqualTo(new int[][]
+        {
+            [1, 2, 5], [3], [4],
+        }).AsCollection);
+    }
+
+    [Test]
+    public void ReadMeExample()
+    {
+        Constraint<string>[] constraints =
+        [
+            Constraint.Create("A", "B"), Constraint.Create("A", "C"), Constraint.Create("B", "D"), Constraint.Create("C", "D"), Constraint.Create("E", "F"), Constraint.CreateUnconstrained("G"),
+            Constraint.CreateUnconstrained("H"),
         ];
 
-        var elements = constraints.Ordered().ToList();
+        var groups = constraints.OrderedGroups().ToList();
 
-        Assert.That(elements.Take(3), Is.EquivalentTo(new[]
-        {
-            1, 2, 5,
-        }));
-
-        Assert.That(elements.Skip(3), Is.EqualTo(new[]
-        {
-            3, 4,
-        }));
+        Assert.That(groups, Is.EqualTo(new string[][]
+            {
+                ["A", "E", "G", "H"], ["B", "C", "F"], ["D"],
+            })
+           .AsCollection);
     }
 }

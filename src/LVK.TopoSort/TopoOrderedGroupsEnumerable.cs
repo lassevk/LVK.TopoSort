@@ -3,32 +3,36 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace LVK.TopoSort;
 
-public class TopoOrderedEnumerable<T> : IEnumerable<T>
+public class TopoOrderedGroupsEnumerable<T> : IEnumerable<T[]>
     where T : notnull
 {
     private readonly IList<Constraint<T>> _source;
-    private readonly IEqualityComparer<T> _comparer;
+    private readonly IEqualityComparer<T> _equalityComparer;
+    private readonly IComparer<T> _comparer;
 
-    public TopoOrderedEnumerable(IList<Constraint<T>> source, IEqualityComparer<T> comparer)
+    public TopoOrderedGroupsEnumerable(IList<Constraint<T>> source, IEqualityComparer<T> equalityComparer, IComparer<T> comparer)
     {
         ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(equalityComparer);
         ArgumentNullException.ThrowIfNull(comparer);
 
         _source = source;
+        _equalityComparer = equalityComparer;
         _comparer = comparer;
     }
 
-    public IEnumerator<T> GetEnumerator()
+    public IEnumerator<T[]> GetEnumerator()
     {
-        var incomingDependencies = new Dictionary<T, HashSet<T>>(_comparer);
-        var outgoingDependencies = new Dictionary<T, HashSet<T>>(_comparer);
-        var elementsWithNoIncomingDependencies = new HashSet<T>(_comparer);
+        var incomingDependencies = new Dictionary<T, HashSet<T>>(_equalityComparer);
+        var outgoingDependencies = new Dictionary<T, HashSet<T>>(_equalityComparer);
+        var elementsWithNoIncomingDependencies = new HashSet<T>(_equalityComparer);
 
         InitializeDataStructures(incomingDependencies, outgoingDependencies, elementsWithNoIncomingDependencies);
         while (elementsWithNoIncomingDependencies.Any())
         {
-            foreach (T element in elementsWithNoIncomingDependencies)
-                yield return element;
+            T[] group = elementsWithNoIncomingDependencies.ToArray();
+            Array.Sort(group, _comparer);
+            yield return group;
 
             RemoveBatchFromConstraints(incomingDependencies, outgoingDependencies, elementsWithNoIncomingDependencies);
         }
@@ -58,7 +62,7 @@ public class TopoOrderedEnumerable<T> : IEnumerable<T>
 
         foreach (Constraint<T> constraint in _source)
         {
-            if (_comparer.Equals(constraint.FirstElement, constraint.SecondElement))
+            if (_equalityComparer.Equals(constraint.FirstElement, constraint.SecondElement))
                 continue;
 
             addToDictionary(outgoingDependencies, constraint.FirstElement, constraint.SecondElement);

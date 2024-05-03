@@ -12,4 +12,95 @@ all the constraints.
 Example
 ---
 
-*(todo)*
+```mermaid
+graph TD;
+    A --> B;
+    A --> C;
+    B --> D;
+    C --> D;
+    E --> F;
+    G;
+    H;
+```
+
+```csharp
+Constraint<string>[] constraints = [
+    Constraint.Create("A", "B"),
+    Constraint.Create("A", "C"),
+    Constraint.Create("B", "D"),
+    Constraint.Create("C", "D"),
+    Constraint.Create("E", "F"),
+    Constraint.CreateUnconstrained("G"),
+    Constraint.CreateUnconstrained("H"),
+];
+
+foreach (var grp in constraints.OrderedGroups())
+    Console.WriteLine(string.Join(", ", grp));
+```
+
+One correct output from this would be:
+
+```text
+A, E, G, H
+B, C, F
+D
+``` 
+
+The `OrderedGroups` method will return groups of elements, where each group has no intra-dependencies.
+In the example above, there are no dependencies between `A`, `E`, `G`, and `H`.
+
+The `OrderedGroups` takes an optional `IComparer<T>` comparer that for each such group orders the individual
+elements in the group. By default the `Comparer<T>.Default` is used.
+
+There is also another method, `Ordered` that expands these groups, with the exact same constraints,
+the following code:
+
+```csharp
+foreach (var element in constraints.Ordered())
+    Console.WriteLine(element);
+```
+
+Would output this:
+
+```text
+A
+E
+G
+H
+B
+C
+F
+D
+``` 
+
+The same elements, just as individual elements and not grouped together.
+
+Cycles
+---
+If the constraint graph contains cycles, an exception will be thrown during enumeration.
+
+Example:
+
+```mermaid
+graph TD;
+    A --> B;
+    B --> C;
+    C --> D;
+    D --> B;
+```
+
+```csharp
+Constraint<string>[] constraints = [
+    Constraint.Create("A", "B"),
+    Constraint.Create("B", "C"),
+    Constraint.Create("C", "D"),
+    Constraint.Create("D", "B"),
+];
+
+foreach (var grp in constraints.OrderedGroups())
+    Console.WriteLine(string.Join(", ", grp));
+```
+
+This will throw an `TopologicalCycleException`. There is a property on this exception, `Elements`, that contains
+the elements still in the graph at the point where the cycle was detected, which in the above case would be all the
+elements except `A`.
