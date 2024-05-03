@@ -149,5 +149,7 @@ public class TopoOrderedGroupsEnumerableTests
                 2, 1, 4, 3, 6, 5, 8, 7,
             })
            .AsCollection);
+
+        Verify.ConstraintsSatisfied(constraints, output);
     }
 }
